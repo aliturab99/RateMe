@@ -9,7 +9,7 @@ const verifyuser = require("../middlewares/auth")
 const router = express.Router();
 const bcrypt = require("bcrypt");
 
-router.use(["/edit", "/delete", "/profile", "/profile-update"], verifyuser);
+router.use(["/add", "/edit", "/delete", "/profile", "/profile-update"], verifyuser);
 
 
 
@@ -25,7 +25,6 @@ router.post("/add", async (req, res) => {
         password_reset_code,
         email_verification_code,
         type,
-        active,
     } = req.body;
     try {
         const userExist = await User.findOne({ email: req.body.email })
@@ -40,7 +39,6 @@ router.post("/add", async (req, res) => {
             password_reset_code,
             email_verification_code,
             type,
-            active,
         });
         await user.save();
         res.json({ user });
@@ -89,7 +87,6 @@ router.post("/edit", async (req, res) => {
                 profile_picture,
                 password,
                 type,
-                active,
             } = req.body;
 
         const updatedUser = await User.findByIdAndUpdate(req.body.id, {
@@ -99,7 +96,6 @@ router.post("/edit", async (req, res) => {
             profile_picture,
             password,
             type,
-            active,
 
         });
         res.json({ user: updatedUser })
@@ -208,7 +204,6 @@ router.get("/profile", async(req, res) =>{
                 profile_picture,
                 password,
                 type,
-                active,
             } = req.body;
 
         let updatedUser = await User.findByIdAndUpdate(req.user._id, {
@@ -218,8 +213,6 @@ router.get("/profile", async(req, res) =>{
             profile_picture,
             password,
             type,
-            active,
-
         });
         updatedUser = updatedUser.toObject();
         delete updatedUser.password
@@ -229,6 +222,17 @@ router.get("/profile", async(req, res) =>{
         res.status(400).json({ error: err.message })
     }
 })
+
+router.get("/", async(req, res) =>{
+    try{
+      let users = await User.find();
+      
+      res.status(200).json(users);
+    }catch(err){
+      res.status(400).json({ error: err.message })
+    }
+  })
+
 
 
 module.exports = router;
