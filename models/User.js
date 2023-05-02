@@ -29,15 +29,12 @@ const userSchema = new mongoose.Schema({
     password_reset_code: {
         type: String,
     },
-    email_verification_code: {
-        type: String,
-    },
     type: {
         type: Number,
         required: true,
     },
-    active: {
-        type: Number,
+    department_id: {
+        type: mongoose.Schema.Types.ObjectId
     },
     created_on: {
         type: Date,
@@ -50,14 +47,6 @@ const userSchema = new mongoose.Schema({
 
 });
 
-userSchema.set('toJSON', {
-  getters: true,
-  transform: (doc, ret, options) => {
-    ret.created_on = moment(ret.created_on).format('YYYY-MM-DD');
-    ret.modified_on = moment(ret.modified_on).format('YYYY-MM-DD');
-    return ret;
-  }
-});
 
 const User = mongoose.model("users", userSchema);
 
