@@ -1,8 +1,7 @@
 const mongoose = require("mongoose")
 const moment = require("moment/moment");
-const { userTypes } = require("../utils/utils");
 
-const userSchema = new mongoose.Schema({
+const employeeSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -13,27 +12,22 @@ const userSchema = new mongoose.Schema({
     },
     phone_number: {
         type: String,
-        required: true,
         maxlength: 20,
-
     },
-    profile_picture: {
+    id_card: {
         type: String,
-
-    },
-    password: {
-        type: String,
-
-    },
-    password_reset_code: {
-        type: String,
-    },
-    type: {
-        type: Number,
-        required: true,
     },
     department_id: {
         type: mongoose.Schema.Types.ObjectId
+    },
+    profile_picture: {
+        type: String,
+    },
+    designation: {
+        type: String,
+    },
+    rating: {
+        type: Number,
     },
     created_on: {
         type: Date,
@@ -47,6 +41,6 @@ const userSchema = new mongoose.Schema({
 });
 
 
-const User = mongoose.model("users", userSchema);
+const Employee = mongoose.model("employees", employeeSchema);
 
-module.exports = User;
+module.exports = Employee;
