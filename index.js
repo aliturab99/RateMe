@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const cors = require('cors')
 const userRoutes = require("./controllers/users")
 const deparmentRoutes = require("./controllers/departments")
+const employeeRoutes = require("./controllers/employees")
 
 
 const app = express();
@@ -12,6 +13,7 @@ app.use(express.json())
 
 app.use ("/api/users", userRoutes)
 app.use ("/api/departments", deparmentRoutes)
+app.use ("/api/employees", employeeRoutes)
 
 mongoose.connect(process.env.MONGODB_CONNECTION_URI).then( () => {
     console.log("database is connected")

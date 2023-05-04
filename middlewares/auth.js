@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken")
 const User = require("../models/User")
 
 const verifyuser = async (req, res, next) => {
-    console.log(req.headers.authorization)
     try {
         if (!req.headers.authorization)
             throw new Error("invalid request")

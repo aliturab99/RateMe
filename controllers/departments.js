@@ -67,7 +67,7 @@ router.post("/edit", async (req, res) => {
             throw new Error("Invalid Id");
 
         //check that person is editing his own assigned department
-        if (req.user._id.toString() !== department.user_id.toString())
+        if ( req.user.type !== userTypes.USER_TYPE_SUPER_ADMIN && req.user._id.toString() !== department.user_id.toString())
             throw new Error("Invalid request");
 
 
@@ -106,6 +106,9 @@ router.delete('/delete', async (req, res) => {
         // check for valid object Id using mongoose this will check the id is this id is according to formula of #
         if (!mongoose.isValidObjectId(req.body.id))
             throw new Error("Invalid Id");
+            
+        if (req.user.type !== userTypes.USER_TYPE_SUPER_ADMIN)
+        throw new Error("Invalid Request")
 
         const department = await Department.findById(req.body.id)
             if (!department)
