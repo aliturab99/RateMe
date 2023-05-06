@@ -26,29 +26,21 @@ const departmentSchema = new mongoose.Schema({
     rating: {
         type: Number,
     },
-    user_id: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId
     },
-    created_on: {
+    createdOn: {
         type: Date,
         default: moment().format('YYYY-MM-DD')
     },
 
-    modified_on: {
+    modifiedOn: {
         type: Date,
         default: moment().format('YYYY-MM-DD')
     },
 
 });
 
-departmentSchema.set('toJSON', {
-  getters: true,
-  transform: (doc, ret, options) => {
-    ret.created_on = moment(ret.created_on).format('YYYY-MM-DD');
-    ret.modified_on = moment(ret.modified_on).format('YYYY-MM-DD');
-    return ret;
-  }
-});
 
 const Department = mongoose.model("departments", departmentSchema);
 

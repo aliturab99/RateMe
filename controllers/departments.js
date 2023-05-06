@@ -26,7 +26,7 @@ router.post("/add", async (req, res) => {
             phone,
             logo,
             address,
-            user_id
+            userId
         } = req.body;
 
         const department = Department({
@@ -35,7 +35,7 @@ router.post("/add", async (req, res) => {
             phone,
             logo,
             address,
-            user_id
+            userId
         });
         await department.save();
         res.json({ department });
@@ -67,7 +67,7 @@ router.post("/edit", async (req, res) => {
             throw new Error("Invalid Id");
 
         //check that person is editing his own assigned department
-        if ( req.user.type !== userTypes.USER_TYPE_SUPER_ADMIN && req.user._id.toString() !== department.user_id.toString())
+        if ( req.user.type !== userTypes.USER_TYPE_SUPER_ADMIN && req.user._id.toString() !== department.userId.toString())
             throw new Error("Invalid request");
 
 
@@ -114,9 +114,6 @@ router.delete('/delete', async (req, res) => {
             if (!department)
                 throw new Error("Invalid Id");
 
-        //check that person is editing his own assigned department
-        if (req.user._id.toString() !== department.user_id.toString())
-            throw new Error("Invalid request");
 
 
         await Department.findByIdAndDelete(req.body.id)
@@ -132,7 +129,7 @@ router.get("/", async (req, res) => {
         throw new Error("Invalid Request")
         
         let department = await Department.find()
-        res.status(200).json(users);
+        res.status(200).json(department);
     } catch (err) {
         res.status(400).json({ error: err.message })
     }

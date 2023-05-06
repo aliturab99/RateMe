@@ -19,11 +19,11 @@ router.post("/add", async (req, res) => {
     const {
         name,
         email,
-        phone_number,
-        profile_picture,
+        phoneNumber,
+        profilePicture,
         password,
-        password_reset_code,
-        email_verification_code,
+        passwordResetCode,
+        emailVerificationCode,
         type,
     } = req.body;
     try {
@@ -33,11 +33,11 @@ router.post("/add", async (req, res) => {
         const user = User({
             name,
             email,
-            phone_number,
-            profile_picture,
+            phoneNumber,
+            profilePicture,
             password: await bcrypt.hash(req.body.password, 10),
-            password_reset_code,
-            email_verification_code,
+            passwordResetCode,
+            emailVerificationCode,
             type,
         });
         await user.save();
@@ -83,8 +83,8 @@ router.post("/edit", async (req, res) => {
             const {
                 name,
                 email,
-                phone_number,
-                profile_picture,
+                phoneNumber,
+                profilePicture,
                 password,
                 type,
             } = req.body;
@@ -92,8 +92,8 @@ router.post("/edit", async (req, res) => {
         const updatedUser = await User.findByIdAndUpdate(req.body.id, {
             name,
             email,
-            phone_number,
-            profile_picture,
+            phoneNumber,
+            profilePicture,
             password,
             type,
 
@@ -133,7 +133,7 @@ router.post("/signin", async (req, res) => {
 
         user = user.toObject();
         delete user.password;
-        user.created_on = moment().format("YYYY-MM-DD")
+        user.createdOn = moment().format("YYYY-MM-DD")
 
         const token = await createJWTToken(user, 12)
 
@@ -200,8 +200,8 @@ router.get("/profile", async(req, res) =>{
             const {
                 name,
                 email,
-                phone_number,
-                profile_picture,
+                phoneNumber,
+                profilePicture,
                 password,
                 type,
             } = req.body;
@@ -209,8 +209,8 @@ router.get("/profile", async(req, res) =>{
         let updatedUser = await User.findByIdAndUpdate(req.user._id, {
             name,
             email,
-            phone_number,
-            profile_picture,
+            phoneNumber,
+            profilePicture,
             password,
             type,
         });
