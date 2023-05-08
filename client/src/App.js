@@ -1,5 +1,6 @@
 import { Button } from "@mui/material";
 import { useDispatch } from "react-redux";
+import AppPublic from "./AppPublic";
 import Alert from "./component/library/Alert";
 import ProgressBar from "./component/library/ProgressBar";
 import { showSuccess } from "./store/actions/alertActions";
@@ -7,6 +8,8 @@ import { hideProgressBar, showProgressBar } from "./store/actions/progressBarAct
 
 function App() {
   const dispatch = useDispatch();
+
+  return <AppPublic />
   return (
     <div className="App">
       <Button onClick={() => dispatch(showSuccess("Successfull"))}>Click me</Button>
