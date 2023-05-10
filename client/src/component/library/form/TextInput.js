@@ -6,7 +6,7 @@ function TextInput(props) {
     const { touched, error } = meta;
   return (
     <Box>
-        <TextField size='small' {...input} {...rest} error={touched && error ? true : false} />
+        <TextField fullWidth size='small' {...input} {...rest} error={touched && error ? true : false} />
         <FormHelperText error>
             {
                 touched && error ? error : <span>&nbsp;</span>
