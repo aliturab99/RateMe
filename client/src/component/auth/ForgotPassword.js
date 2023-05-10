@@ -1,5 +1,6 @@
 import { Box, Button } from "@mui/material"
 import { Field, Form } from "react-final-form"
+import { Link } from "react-router-dom"
 import TextInput from "../library/form/TextInput"
 
 function ForgotPassword() {
@@ -25,6 +26,9 @@ function ForgotPassword() {
               <form onSubmit={props.handleSubmit} >
                 <Field name="email" type="email" component={TextInput} placeholder="Enter your email..." />
                 <Button type="submit" variant="outlined">Reset Password</Button>
+                <Box mt={2}>
+                  <Link style={{textDecoration: "none", fontSize: "14px", fontWeight: "bold", letterSpacing: "2px"}} to={"/admin/signin"}>Sign In</Link>
+                </Box>
               </form>
             )
           }
