@@ -34,6 +34,9 @@ function ResetPassword() {
                 <Field name="newPassword" type="password" component={TextInput} placeholder="Enter new password..." />
                 <Field name="confirmPassword" type="password" component={TextInput} placeholder="Enter confirm password..." />
                 <Button type="submit" variant="outlined">Set Password</Button>
+                <Box mt={2}>
+                  <Link style={{textDecoration: "none", fontSize: "14px", fontWeight: "bold", letterSpacing: "2px"}} to={"/admin/signin"}>Sign In</Link>
+                </Box>
               </form>
             )
           }
