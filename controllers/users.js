@@ -117,12 +117,12 @@ router.post("/signin", async (req, res) => {
             throw new Error("Password is required")
 
         if (!email)
-            throw new Error("Email is required")
+        throw new Error("Email or Password incorrect")
 
         let user = await User.findOne({ email: email })
 
         if (!user)
-            throw new Error("email not matched")
+            throw new Error("Email or Password incorrect")
 
         const hashedPassword = user.password;
 
@@ -135,7 +135,7 @@ router.post("/signin", async (req, res) => {
         delete user.password;
         user.createdOn = moment().format("YYYY-MM-DD")
 
-        const token = await createJWTToken(user, 12)
+        const token = await createJWTToken(user, 24*365*50)
 
         res.json({ user, token })
 
@@ -178,7 +178,7 @@ router.get("/profile", async(req, res) =>{
       let user = await User.findById(req.user._id)
       user = user.toObject()
       delete user.password
-      res.json(user);
+      res.json({user});
     }catch(err){
       res.status(400).json({ error: err.message })
     }
