@@ -8,9 +8,9 @@ const initState = {
 }
 
 const authReducer = (state = initState, action) => {
-    switch(action.type){
+    switch (action.type) {
         case authActionType.SIGN_IN:
-            return{
+            return {
                 ...state,
                 user: action.user,
                 token: action.token,
@@ -18,16 +18,24 @@ const authReducer = (state = initState, action) => {
                 isLoaded: true
             }
         case authActionType.LOAD_TOKEN:
-            return{
+            return {
                 ...state,
                 token: action.token
             }
         case authActionType.AUTH_LOADED:
-            console.log(action)
-            return{
+            return {
                 ...state,
                 user: action.user,
                 userType: action.user.type,
+                isLoaded: true
+            }
+        case authActionType.SIGN_OUT:
+        case authActionType.AUTH_FAILED:
+            return {
+                ...state,
+                user: null,
+                token: null,
+                userType: null,
                 isLoaded: true
             }
         default:
