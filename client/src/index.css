@@ -19,3 +19,9 @@ code {
 #root {
   height: 100%;
 }
+.appPreLoader {
+  height: 100%;
+}
+.App {
+  height: 100%;
+}
