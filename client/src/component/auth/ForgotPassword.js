@@ -1,16 +1,23 @@
 import { Box, Button } from "@mui/material"
 import axios from "axios"
 import { Field, Form } from "react-final-form"
-import { Link } from "react-router-dom"
-import { showError } from "../../store/actions/alertActions"
+import { useDispatch } from "react-redux"
+import { Link, useNavigate } from "react-router-dom"
+import { showError, showSuccess } from "../../store/actions/alertActions"
 import TextInput from "../library/form/TextInput"
 
 function ForgotPassword() {
 
+  const dispatch = useDispatch();
+  const navigator = useNavigate()
   const handelForgotPassword = async(data, form) => {
     try{
-      let result = await axios.post("/users/forgot-password", data);
-      const { user, token } = result.data;
+      let result = await axios.post("/users/forgot-password", data).then( ({data}) => {
+        if(data.success){
+          navigator('/admin/signin')
+          dispatch(showSuccess("An Email is sent to you to reset the Password"))
+        }
+      } )
     }catch(error){
       let message = error && error.response && error.response.data ? error.response.data.error : error.message;
       dispatchEvent(showError(message))
