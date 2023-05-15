@@ -15,9 +15,6 @@ const bcrypt = require("bcrypt");
 
 router.use(["/add", "/edit", "/delete", "/profile", "/profile-update"], verifyuser);
 
-
-
-
 //Add new users
 router.post("/add", async (req, res) => {
     const {
@@ -50,8 +47,6 @@ router.post("/add", async (req, res) => {
         res.status(400).json({ error: err.message })
     }
 })
-
-
 
 //Edit Users
 router.post("/edit", async (req, res) => {
@@ -149,7 +144,7 @@ router.post("/signin", async (req, res) => {
     }
 })
 
-//forgotten_password
+//forgot_password
 router.post("/forgot-password", async (req, res) => {
 
     try {
@@ -198,6 +193,7 @@ router.post("/forgot-password", async (req, res) => {
       let user = await User.findOne({ passwordResetCode: req.body.code });
       if (!user) throw new Error("Invalid request");
   
+<<<<<<< Updated upstream
       user = user.toObject(); 
       delete user.password;
   
@@ -238,6 +234,8 @@ router.post("/forgot-password", async (req, res) => {
   });
 
 
+=======
+>>>>>>> Stashed changes
 //Delete Users
 router.delete('/delete', async (req, res) => {
     try {
@@ -263,7 +261,6 @@ router.delete('/delete', async (req, res) => {
     }
   })
 
-
 //Profile Data
 router.get("/profile", async(req, res) =>{
     try{
@@ -275,8 +272,6 @@ router.get("/profile", async(req, res) =>{
       res.status(400).json({ error: err.message })
     }
   }) 
-
-
 
   //Profile Update
   router.post("/profile-update", async (req, res) => {
@@ -324,7 +319,5 @@ router.get("/", async(req, res) =>{
       res.status(400).json({ error: err.message })
     }
   })
-
-
 
 module.exports = router;
