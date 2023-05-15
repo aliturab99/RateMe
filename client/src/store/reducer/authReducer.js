@@ -20,13 +20,13 @@ const authReducer = (state = initState, action) => {
         case authActionType.LOAD_TOKEN:
             return {
                 ...state,
-                token: action.token
+                token: action.payload
             }
         case authActionType.AUTH_LOADED:
             return {
                 ...state,
-                user: action.user,
-                userType: action.user.type,
+                user: action.payload,
+                userType: action.payload.type,
                 isLoaded: true
             }
         case authActionType.SIGN_OUT:

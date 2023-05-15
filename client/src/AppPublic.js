@@ -12,7 +12,7 @@ function AppPublic() {
       <Routes>
           <Route path="/admin/signin" Component={SignIn} />
           <Route path="/admin/forgot-password" Component={ForgotPassword} />
-          <Route path="/admin/reset-password" Component={ResetPassword} />
+          <Route path="/admin/reset-password/:resetCode" Component={ResetPassword} />
       </Routes>
     </Box>
   )
