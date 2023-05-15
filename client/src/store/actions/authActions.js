@@ -1,4 +1,5 @@
 import axios from "axios"
+import { showError } from "./alertActions"
 
 export const authActionType = {
     SIGN_IN: "signIn",
@@ -17,25 +18,23 @@ export const signOut = () => {
     }
 }
 
+
 export const loadAuth = () => {
     return (dispatch, getState) => {
-
-
-        const token = localStorage.getItem("token")
-        dispatch(({
-            type: authActionType.LOAD_TOKEN,
-            token: token ? token : null
-        }))
-
-
-
-        axios.get('/users/profile').then( ({data}) => {
-            dispatch({
-                type: authActionType.AUTH_LOADED,
-                user: data.user
-            })
-        }).catch( err => {
-            console.log(err)
-        } )
+  
+      const token = localStorage.getItem('token');
+      // load token first
+  
+      // if token is not in localStoarge then dispatach Auth Failed
+      if (!token) return dispatch({ type: authActionType.AUTH_FAILED });
+  
+      dispatch({ type: authActionType.LOAD_TOKEN, payload: token ? token : null });
+  
+      axios.get('/users/profile').then(result => {
+        dispatch({ type: authActionType.AUTH_LOADED, payload: result.data.user })
+      }).catch(error => {
+        if (token)
+          dispatch(showError(error.message))
+      })
     }
-}
+  }
