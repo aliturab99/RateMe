@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { connect } from "react-redux";
 import { Navigate, useLocation } from "react-router-dom";
 import AppPublic from "./AppPublic";
+import AppBar from "./component/AppBar";
 import Alert from "./component/library/Alert";
 import AppPreLoader from "./component/library/AppPreLoader";
 import ProgressBar from "./component/library/ProgressBar";
@@ -34,8 +35,7 @@ function App({ user, isAuthLoaded, loadAuth, signOut }) {
 
   return (
     <div className="App">
-      You are Signed in <Button onClick={signOut}>Logout</Button>
-      <ProgressBar />
+      <AppBar />
       <Alert />
     </div>
   );
