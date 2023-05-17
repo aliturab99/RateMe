@@ -22,7 +22,7 @@ function ResetPassword() {
     }).catch(error => {
       console.log(error);
       dispatch(showError(error.message));
-      // navigate('/admin/signin')
+      navigate('/admin/signin')
     })
   }, [])
 
@@ -39,8 +39,6 @@ function ResetPassword() {
 
     if (data.confirmPassword && data.newPassword !== data.confirmPassword)
       errors.confirmPassword = "Passwords are not same";
-
-
     return errors
   };
 

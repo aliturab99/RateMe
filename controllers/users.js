@@ -185,25 +185,22 @@ router.post("/forgot-password", async (req, res) => {
     }
   });
 
+router.post("/verify-reset-code", async (req, res) => {
 
-  router.post("/verify-reset-code", async (req, res) => {
+  try {
+    if (!req.body.code) throw new Error("Code is required");
+    let user = await User.findOne({ passwordResetCode: req.body.code });
+    if (!user) throw new Error("Invalid request");
 
-    try {
-      if (!req.body.code) throw new Error("Code is required");
-      let user = await User.findOne({ passwordResetCode: req.body.code });
-      if (!user) throw new Error("Invalid request");
-  
-<<<<<<< Updated upstream
-      user = user.toObject(); 
-      delete user.password;
-  
-      res.json({ user });
-  
-    } catch (error) {
-      res.status(400).json({ error: error.message });
-    }
-  });
+    user = user.toObject(); 
+    delete user.password;
 
+    res.json({ user });
+
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
 
   router.post("/reset-password", async (req, res) => {
 
@@ -233,9 +230,6 @@ router.post("/forgot-password", async (req, res) => {
     }
   });
 
-
-=======
->>>>>>> Stashed changes
 //Delete Users
 router.delete('/delete', async (req, res) => {
     try {
