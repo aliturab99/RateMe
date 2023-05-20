@@ -1,9 +1,11 @@
-import { Button } from "@mui/material";
+import { Button, Container } from "@mui/material";
 import { useEffect } from "react";
 import { connect } from "react-redux";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import AppPublic from "./AppPublic";
+import AccountSettings from "./component/AccountSettings";
 import AppBar from "./component/AppBar";
+import Dashboard from "./component/Dashboard";
 import Alert from "./component/library/Alert";
 import AppPreLoader from "./component/library/AppPreLoader";
 import ProgressBar from "./component/library/ProgressBar";
@@ -36,7 +38,13 @@ function App({ user, isAuthLoaded, loadAuth, signOut }) {
   return (
     <div className="App">
       <AppBar />
-      <Alert />
+      <Container sx={{ mt: 10 }} maxWidth="lg">
+        <Routes>
+          <Route path="/admin/account-settings" Component={AccountSettings} />
+          <Route path="/admin/dashboard" Component={Dashboard} />
+        </Routes>
+      </Container>
+
     </div>
   );
 }

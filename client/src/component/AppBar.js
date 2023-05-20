@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { signOut } from '../store/actions/authActions';
 import { useDispatch } from 'react-redux';
 import ProgressBar from './library/ProgressBar';
+import Alert from './library/Alert';
 
 
 
@@ -47,7 +48,7 @@ function AppBar() {
                         RateMe
                     </Typography>
                     <Box textAlign={"center"} flexGrow={1} textAlign={"end"} >
-                        <Button component={Link} to={"/admin/dashboard/department/"} sx={{ color: "#fff", my: 2 }}>
+                        <Button component={Link} to={"/admin/departments/"} sx={{ color: "#fff", my: 2 }}>
                             Department
                         </Button>
                     </Box>
@@ -73,8 +74,8 @@ function AppBar() {
                             open={Boolean(anchorEl)}
                             onClose={handleCloseMenu}
                         >
-                            <MenuItem >
-                                <Typography onClick={handleCloseMenu} component={Link} to="/admin/dashboard/account-setting" textAlign="center">Account Setting</Typography>
+                            <MenuItem  component={Link} to="/admin/account-settings" >
+                                <Typography onClick={handleCloseMenu} textAlign="center">Account Setting</Typography>
                             </MenuItem>
                             <MenuItem onClick={handleLogOut} >
                                 <Typography textAlign="center">Sign Out</Typography>
@@ -85,6 +86,7 @@ function AppBar() {
                 </Toolbar>
             </Container>
             <ProgressBar />
+            <Alert />
         </MuiAppBar>
     )
 }
