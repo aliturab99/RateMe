@@ -5,6 +5,7 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import AppPublic from "./AppPublic";
 import AccountSettings from "./component/AccountSettings";
 import AppBar from "./component/AppBar";
+import BlockInterface from "./component/BlockInterface";
 import Dashboard from "./component/Dashboard";
 import Alert from "./component/library/Alert";
 import AppPreLoader from "./component/library/AppPreLoader";
@@ -38,7 +39,8 @@ function App({ user, isAuthLoaded, loadAuth, signOut }) {
   return (
     <div className="App">
       <AppBar />
-      <Container sx={{ mt: 10 }} maxWidth="lg">
+      <Container sx={{ mt: 10, position: "relative",  backgroundColor: '#fff', p: 3, minWidth:'350px', borderRadius:"5px", boxShadow:"0 0 17px 5px #dbdada"}} maxWidth="lg">
+        <BlockInterface />
         <Routes>
           <Route path="/admin/account-settings" Component={AccountSettings} />
           <Route path="/admin/dashboard" Component={Dashboard} />
