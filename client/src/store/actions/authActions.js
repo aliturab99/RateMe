@@ -6,10 +6,12 @@ export const authActionType = {
     SIGN_OUT: "signOut",
     AUTH_LOADED: "authLoaded",
     AUTH_FAILED: "authFailed",
-    LOAD_TOKEN: "loadToken"
+    LOAD_TOKEN: "loadToken",
+    UPDATE_USER: "updateUser"
 }
 
 export const signin = (user, token) => ({type: authActionType.SIGN_IN, user, token})
+export const updateUser = (user) => ({ type: authActionType.UPDATE_USER, user })
 
 export const signOut = () => {
     localStorage.removeItem("token")
@@ -30,7 +32,7 @@ export const loadAuth = () => {
   
       dispatch({ type: authActionType.LOAD_TOKEN, payload: token ? token : null });
   
-      axios.get('/users/profile').then(result => {
+      axios.get('api/users/profile').then(result => {
         dispatch({ type: authActionType.AUTH_LOADED, payload: result.data.user })
       }).catch(error => {
         if (token)

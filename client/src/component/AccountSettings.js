@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserEdit } from "@fortawesome/free-solid-svg-icons";
 import { hideProgressBar, showProgressBar } from "../store/actions/progressBarActions";
 import FileInput from "./library/form/FileInput";
+import { updateUser } from "../store/actions/authActions";
 
 function AccountSettings({ user, dispatch }) {
 
@@ -38,14 +39,13 @@ function AccountSettings({ user, dispatch }) {
   const handelUpdateProfile = async (data, form) => {
     try {
       dispatch(showProgressBar())
-      console.log(data)
-      let result = await axios.postForm("/users/profile-update", data);
+      let result = await axios.postForm("api/users/profile-update", data);
       if(result.data.user)
       {
+        dispatch( updateUser(result.data.user) )
         dispatch(showSuccess('Profile updated successfully'))
       }
       dispatch(hideProgressBar())
-      
     } catch (error) {
       let message = error && error.response && error.response.data ? error.response.data.error : error.message;
       dispatch(hideProgressBar())
@@ -77,7 +77,10 @@ function AccountSettings({ user, dispatch }) {
             <Field component={TextInput} type='text' name="name" placeholder="Enter name" />
             <Field component={TextInput} type='email' name="email" placeholder="Enter email address" disabled />
             <Field component={TextInput} type='text' name="phoneNumber" placeholder="Enter phone number" />
-            <Field component={FileInput} inputProps={{accept: "image/*"}} name="profilePicture" />
+            <Field 
+            component={FileInput} 
+            inputProps={{accept: "image/*"}} 
+            name="profilePicture" />
             <Field component={TextInput} type='password' name="currentPassword" placeholder="Enter current passowrd" />
             <Field component={TextInput} type='password' name="newPassword" placeholder="Enter new passowrd" />
             <Field component={TextInput} type='password' name="confirmPassword" placeholder="Enter confirm passowrd" />
