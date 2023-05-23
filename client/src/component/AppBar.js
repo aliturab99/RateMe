@@ -4,7 +4,7 @@ import AdbIcon from '@mui/icons-material/Adb';
 import { Box, Container } from '@mui/system';
 import { Link } from 'react-router-dom';
 import { signOut } from '../store/actions/authActions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ProgressBar from './library/ProgressBar';
 import Alert from './library/Alert';
 
@@ -14,6 +14,8 @@ import Alert from './library/Alert';
 function AppBar() {
     const [anchorEl, setAnchorEl] = useState(null)
     const dispatch = useDispatch()
+    const user = useSelector(state => state.auth.user)
+
     const handleOpenMenu = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -55,7 +57,7 @@ function AppBar() {
                     <Box>
                         <Tooltip title="Open Setting">
                             <IconButton onClick={handleOpenMenu} sx={{ p: 0 }}>
-                                <Avatar src="" />
+                                <Avatar src={process.env.REACT_APP_BASE_URL + `content/${user._id}/${user.profilePicture}`} />
                             </IconButton>
                         </Tooltip>
                         <Menu

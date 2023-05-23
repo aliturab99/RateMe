@@ -12,7 +12,7 @@ function ForgotPassword() {
   const navigator = useNavigate()
   const handelForgotPassword = async(data, form) => {
     try{
-      let result = await axios.post("/users/forgot-password", data).then( ({data}) => {
+      let result = await axios.post("api/users/forgot-password", data).then( ({data}) => {
         if(data.success){
           navigator('/admin/signin')
           dispatch(showSuccess("An Email is sent to you to reset the Password"))
