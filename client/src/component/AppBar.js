@@ -51,7 +51,7 @@ function AppBar() {
                     </Typography>
                     <Box textAlign={"center"} flexGrow={1} textAlign={"end"} >
                         <Button component={Link} to={"/admin/departments/"} sx={{ color: "#fff", my: 2 }}>
-                            Department
+                            Departments
                         </Button>
                     </Box>
                     <Box>

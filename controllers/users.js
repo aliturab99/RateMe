@@ -2,8 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose")
 const User = require("../models/User")
 const moment = require("moment/moment");
-const { createJWTToken } = require("../utils/utils");
-const verifyuser = require("../middlewares/auth")
+const { createJWTToken, userTypes } = require("../utils/utils");
+const { verifyuser } = require("../middlewares/auth")
 const ejs = require("ejs")
 const multer = require("multer")
 const fs = require('fs').promises;
@@ -270,7 +270,6 @@ router.get("/profile", async(req, res) =>{
       res.status(400).json({ error: err.message })
     }
   }) 
-
   const storage = multer.diskStorage({
     destination: async (req, file, cb) => {
       try{
@@ -346,7 +345,7 @@ router.get("/", async(req, res) =>{
     try{
       let users = await User.find();
       
-      res.status(200).json(users);
+      res.status(200).json({users});
     }catch(err){
       res.status(400).json({ error: err.message })
     }
