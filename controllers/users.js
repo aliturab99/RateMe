@@ -308,10 +308,10 @@ router.get("/profile", async(req, res) =>{
       }
       if(req.file && req.file.filename){
         record.profilePicture = req.file.filename
-        if(req.user.profilePicture && req.user.profilePicture !== req.file.filename){
-          const oldPicPath = `content/${req.user._id}/${req.user.profilePicture}`
-          await fs.unlink(oldPicPath)
-        }
+      if(req.user.profilePicture && req.user.profilePicture !== req.file.filename){
+        const oldPicPath = `content/${req.user._id}/${req.user.profilePicture}`
+        await fs.unlink(oldPicPath)
+      }
       }
       
       if (!req.body.name) throw new Error("Name is required");
