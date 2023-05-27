@@ -14,6 +14,9 @@ import Alert from "./component/library/Alert";
 import AppPreLoader from "./component/library/AppPreLoader";
 import ProgressBar from "./component/library/ProgressBar";
 import { loadAuth, signOut } from "./store/actions/authActions";
+import Users from "./component/user/Users";
+import AddUser from "./component/user/AddUser";
+import EditUser from "./component/user/EditUser";
 
 const publicRoutes = ['/admin/signin', '/admin/forgot-password', '/admin/reset-password/']
 function App({ user, isAuthLoaded, loadAuth, signOut }) {
@@ -45,6 +48,7 @@ function App({ user, isAuthLoaded, loadAuth, signOut }) {
       <Container sx={{ mt: 10, position: "relative",  backgroundColor: '#fff', p: 3, minWidth:'350px', borderRadius:"5px", boxShadow:"0 0 17px 5px #dbdada"}} maxWidth="lg">
         <BlockInterface />
         <Routes>
+          
           <Route path="/admin/account-settings" Component={AccountSettings} />
           <Route path="/admin/dashboard" Component={Dashboard} />
 
@@ -52,6 +56,13 @@ function App({ user, isAuthLoaded, loadAuth, signOut }) {
           <Route path="/admin/departments" Component={Departments} />
           <Route path="/admin/departments/add" Component={AddDepartment} />
           <Route path="/admin/departments/edit/:deptId" Component={EditDepartment} />
+
+
+          {/* Users routes */}
+          <Route path="/admin/users" Component={Users} />
+          <Route path="/admin/users/add" Component={AddUser} />
+          <Route path="/admin/users/edit/:userId" Component={EditUser} />
+
         </Routes>
       </Container>
 

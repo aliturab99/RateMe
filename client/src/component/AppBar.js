@@ -50,9 +50,8 @@ function AppBar() {
                         RateMe
                     </Typography>
                     <Box textAlign={"center"} flexGrow={1} textAlign={"end"} >
-                        <Button component={Link} to={"/admin/departments/"} sx={{ color: "#fff", my: 2 }}>
-                            Departments
-                        </Button>
+                        <Button component={Link} to={"/admin/departments/"} sx={{ color: "#fff", my: 2 }}>Departments</Button>
+                        <Button LinkComponent={Link} to="/admin/users" sx={{ color: 'white' }}>Users</Button>
                     </Box>
                     <Box>
                         <Tooltip title="Open Setting">
