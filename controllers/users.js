@@ -32,7 +32,7 @@ router.post("/add", async (req, res) => {
     type,
   } = req.body;
   try {
-    if (req.user.type !== userTypes.USER_TYPE_SUPER)
+    if (req.user.type !== userTypes.USER_TYPE_SUPER_ADMIN)
       throw new Error("Invalid Request");
     const userExist = await User.findOne({ email: req.body.email })
     if (userExist)

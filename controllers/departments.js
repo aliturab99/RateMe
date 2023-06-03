@@ -82,7 +82,7 @@ router.post("/edit", upload.single("logo"), async (req, res) => {
 
     //check if logged in user is not super admin and that user 
     //has access to its own department
-    if (req.user.type !== userTypes.USER_TYPE_SUPER && req.user._id.toString() !== department.userId.toString()) // to string is used to convert req.user._id to string because this returns new ObjectId("6439f4ca31d7babed61963e0") that is object user id and we need only string to compare it.
+    if (req.user.type !== userTypes.USER_TYPE_SUPER_ADMIN && req.user._id.toString() !== department.userId.toString()) // to string is used to convert req.user._id to string because this returns new ObjectId("6439f4ca31d7babed61963e0") that is object user id and we need only string to compare it.
       throw new Error("Invalid request");
 
     const record = {
@@ -106,18 +106,22 @@ router.post("/edit", upload.single("logo"), async (req, res) => {
 });
 
 
-router.delete("/delete", async (req, res) => {
+router.post("/delete", async (req, res) => {
   try {
     if (!req.body.id) throw new Error("Department id is required");
     if (!mongoose.isValidObjectId(req.body.id))
       throw new Error("Department id is invalid");
 
     //only super admin can delete department
-    if (req.user.type !== userTypes.USER_TYPE_SUPER)
+    if (req.user.type !== userTypes.USER_TYPE_SUPER_ADMIN)
       throw new Error("Invalid Request");
 
     const department = await Department.findById(req.body.id);
     if (!department) throw new Error("Department does not exists");
+
+    if (department.logo) {
+      await fs.unlink(`content/departments/${department.logo}`);
+    }
 
     await Department.findByIdAndDelete(req.body.id);
 

@@ -17,9 +17,10 @@ import { loadAuth, signOut } from "./store/actions/authActions";
 import Users from "./component/user/Users";
 import AddUser from "./component/user/AddUser";
 import EditUser from "./component/user/EditUser";
+import { userTypes } from "./utils/constants";
 
 const publicRoutes = ['/admin/signin', '/admin/forgot-password', '/admin/reset-password/']
-function App({ user, isAuthLoaded, loadAuth, signOut }) {
+function App({ user, isAuthLoaded, loadAuth, userType }) {
 
   const { pathname } = useLocation();
 
@@ -53,8 +54,14 @@ function App({ user, isAuthLoaded, loadAuth, signOut }) {
           <Route path="/admin/dashboard" Component={Dashboard} />
 
           {/* Departments routes */}
-          <Route path="/admin/departments" Component={Departments} />
-          <Route path="/admin/departments/add" Component={AddDepartment} />
+          {
+            userType === userTypes.USER_TYPE_SUPER &&
+              <>
+                <Route path="/admin/departments" Component={Departments} />
+                <Route path="/admin/departments/add" Component={AddDepartment} />
+              </>
+          }
+
           <Route path="/admin/departments/edit/:deptId" Component={EditDepartment} />
 
 
@@ -74,7 +81,8 @@ const mapStateToProps = (state) => {
   return (
     {
       user: state.auth.user,
-      isAuthLoaded: state.auth.isLoaded
+      isAuthLoaded: state.auth.isLoaded,
+      userType: state.auth.userType
     }
   )
 }

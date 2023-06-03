@@ -12,15 +12,19 @@ function departmentReducer(state = initialState, action) {
         ...state,
         records: newDepartmentsArray
       }
-      case departmentActions.UPDATE_DEPT:
-        return {
-          ...state,
-          records: state.records.map(item => {
-            if(item._id !== action.department._id) return item;
-            else return action.department
-          })
-        }
+    case departmentActions.UPDATE_DEPT:
+      return {
+        ...state,
+        records: state.records.map(item => {
+          if (item._id !== action.department._id) return item;
+          else return action.department
+        })
+      }
     case departmentActions.REMOVE_DEPT:
+      return {
+        ...state,
+        records: state.records.filter(item => item._id !== action.id)
+      }
     case departmentActions.DEPTS_LOADED:
       return {
         ...state,
