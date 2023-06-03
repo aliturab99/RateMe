@@ -7,14 +7,17 @@ import { signOut } from '../store/actions/authActions';
 import { useDispatch, useSelector } from 'react-redux';
 import ProgressBar from './library/ProgressBar';
 import Alert from './library/Alert';
+import { userTypes } from '../utils/constants';
 
 
 
 
 function AppBar() {
+
     const [anchorEl, setAnchorEl] = useState(null)
     const dispatch = useDispatch()
     const user = useSelector(state => state.auth.user)
+    const userType = user.type;
 
     const handleOpenMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -49,10 +52,16 @@ function AppBar() {
                     >
                         RateMe
                     </Typography>
-                    <Box textAlign={"center"} flexGrow={1} textAlign={"end"} >
-                        <Button component={Link} to={"/admin/departments/"} sx={{ color: "#fff", my: 2 }}>
-                            Department
-                        </Button>
+                    <Box textAlign={"end"} flexGrow={1}>
+                        {
+                            userType === userTypes.USER_TYPE_SUPER &&
+                            <Button LinkComponent={Link} to="/admin/departments" sx={{ color: 'white' }}>Departments</Button>
+                        }
+                        {
+                            userType === userTypes.USER_TYPE_SUPER &&
+                            <Button LinkComponent={Link} to={ `/admin/employees/${user.departmentId}`} sx={{ color: 'white' }}>Employees</Button>
+                        }
+                        <Button LinkComponent={Link} to="/admin/users" sx={{ color: 'white' }}>Users</Button>
                     </Box>
                     <Box>
                         <Tooltip title="Open Setting">
@@ -76,7 +85,7 @@ function AppBar() {
                             open={Boolean(anchorEl)}
                             onClose={handleCloseMenu}
                         >
-                            <MenuItem  component={Link} to="/admin/account-settings" >
+                            <MenuItem component={Link} to="/admin/account-settings" >
                                 <Typography onClick={handleCloseMenu} textAlign="center">Account Setting</Typography>
                             </MenuItem>
                             <MenuItem onClick={handleLogOut} >
