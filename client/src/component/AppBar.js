@@ -58,7 +58,7 @@ function AppBar() {
                             <Button LinkComponent={Link} to="/admin/departments" sx={{ color: 'white' }}>Departments</Button>
                         }
                         {
-                            userType === userTypes.USER_TYPE_SUPER &&
+                            userType === userTypes.USER_TYPE_STANDARD &&
                             <Button LinkComponent={Link} to={ `/admin/employees/${user.departmentId}`} sx={{ color: 'white' }}>Employees</Button>
                         }
                         <Button LinkComponent={Link} to="/admin/users" sx={{ color: 'white' }}>Users</Button>
