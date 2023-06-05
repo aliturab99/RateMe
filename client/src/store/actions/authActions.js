@@ -7,7 +7,7 @@ export const authActionType = {
     AUTH_LOADED: "authLoaded",
     AUTH_FAILED: "authFailed",
     LOAD_TOKEN: "loadToken",
-    UPDATE_USER: "updateUser"
+    UPDATE_USER: "updateAuthUser"
 }
 
 export const signin = (user, token) => ({type: authActionType.SIGN_IN, user, token})

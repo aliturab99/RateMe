@@ -10,7 +10,8 @@ import { connect, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import SelectInput from "../library/form/SelectInput";
 import { loadDepartments } from "../../store/actions/departmentActions";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
+import { userTypes } from "../../utils/constants";
 
 function AddUser({ departments, loadDepartments }) {
 
@@ -22,6 +23,15 @@ function AddUser({ departments, loadDepartments }) {
             loadDepartments()
     }, []);
 
+    const deptOptions = useMemo( () => {
+        const options = [{label: "Select Departmernt", value: 0}]
+        departments.forEach(department => {
+            options.push({ label: department.name, value: department._id })
+        }
+        )
+        return options
+    }, [departments] )
+
     const validate = (data) => {
         const errors = {};
 
@@ -31,16 +41,17 @@ function AddUser({ departments, loadDepartments }) {
             errors.email = "Invalid email address";
 
         if (!data.phoneNumber) errors.phoneNumber = "Please enter phone number";
-
-        if (!data.password)
-            errors.password = "Please enter current password";
-        else if (data.password.length < 6)
+        if (!data.password) errors.password = "Password is Required"
+        if (data.password)
+        {
+            if (data.password.length < 6)
             errors.password = "Password should have at least 6 characters";
+        }
 
         if (!data.type)
             errors.type = "User type is required";
-        if (!data.departmentId)
-            errors.departmentId = "User type is required";
+            if ( data.type === userTypes.USER_TYPE_STANDARD && !data.departmentId)
+            errors.departmentId = "Departmert is required";
 
         return errors
     };
@@ -71,31 +82,32 @@ function AddUser({ departments, loadDepartments }) {
             <Form
                 onSubmit={handelUser}
                 validate={validate}
-                initialValues={{}}
+                initialValues={{
+                    type:0,
+                    departmentId : 0
+                }}
                 render={({
                     handleSubmit,
                     submitting,
                     invalid,
                 }) => (
                     <form onSubmit={handleSubmit} method="post" encType="multipart/form-data">
-                        <Field component={TextInput} type='text' name="name" placeholder="Enter name" />
-                        <Field component={TextInput} type='email' name="email" placeholder="Enter email address" />
-                        <Field component={TextInput} type='text' name="phoneNumber" placeholder="Enter phone number" />
-                        <Field component={TextInput} type='password' name="password" placeholder="Enter current passowrd" />
-                        <Field component={SelectInput} name="type" options={[{ label: "Select user type", value: ' ' }, { label: "Super Admin", value: 1 }, { label: "Standard", value: 2 }]} />
+                        <Field component={TextInput} type='text' name="name" autoFocus placeholder="Name" />
+                        <Field component={TextInput} type='email' name="email" placeholder="Email address" />
+                        <Field component={TextInput} type='text' name="phoneNumber" placeholder="Phone number" />
+                        <Field component={TextInput} type='password' name="password" placeholder="Password..." />
+                        <Field component={SelectInput} name="type" options={[{ label: "Select user type", value: 0 }, { label: "Super Admin", value: userTypes.USER_TYPE_SUPER }, { label: "Standard", value: userTypes.USER_TYPE_STANDARD }]} />
                         <Field
                             component={SelectInput}
                             name="departmentId"
                             options={
-                                departments && departments.map(department => ({ label: department.name, value: department._id }))
+                                deptOptions
                             } />
 
                         <Button
                             sx={{ marginTop: '20px' }}
                             variant="outlined"
-                            type="submit"
-                            disabled={invalid || submitting}
-                        >Add User</Button>
+                            type="submit" disabled={invalid || submitting}>Add User</Button>
                     </form>
                 )}
             />
