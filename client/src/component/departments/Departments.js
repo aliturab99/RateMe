@@ -49,7 +49,11 @@ function Departments({ departments, loadDepartments }) {
                     dept.logo && <Avatar src={process.env.REACT_APP_BASE_URL + 'content/departments/' + dept.logo} />
                   }
                 </TableCell>
-                <TableCell>{dept.name}</TableCell>
+                <TableCell>
+                  <Link to={`/admin/employees/${dept._id}`}>
+                    {dept.name}
+                  </Link>
+                </TableCell>
                 <TableCell>{dept.phone}</TableCell>
                 <TableCell>{dept.email}</TableCell>
                 <TableCell>

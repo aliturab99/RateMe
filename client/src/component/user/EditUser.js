@@ -32,7 +32,6 @@ function EditUser() {
 
         if (!data.name) errors.name = "Name is required";
         if (!data.phoneNumber) errors.phoneNumber = "Please enter phone number";
-        if (!data.password) errors.password = "Password is Required"
         if (data.password)
         {
             if (data.password.length < 6)
