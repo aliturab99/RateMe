@@ -21,7 +21,7 @@ router.use(["/all", "/add", "/edit", "/delete", "/profile", "/profile-update"], 
 
 //Add new users
 router.post("/add", async (req, res) => {
-  const {
+  const record = {
     name,
     email,
     phoneNumber,
@@ -32,7 +32,7 @@ router.post("/add", async (req, res) => {
     type,
   } = req.body;
   try {
-    
+
     const userExist = await User.findOne({ email: req.body.email })
     if (userExist)
       throw new Error("Email is already Registered")
@@ -42,10 +42,17 @@ router.post("/add", async (req, res) => {
       email: req.body.email,
       phoneNumber: req.body.phoneNumber,
       password: await bcrypt.hash(req.body.password, 10),
-      type: req.body.type,
       createdOn: new Date()
     }
-    if(req.body.type === userTypes.USER_TYPE_STANDARD_ADMIN) record.departmentId = req.body.departmentId
+
+    if (req.user.type === userTypes.USER_TYPE_STANDARD_ADMIN) {
+      record.departmentId = req.user.departmentId;
+      record.type = userTypes.USER_TYPE_STANDARD_ADMIN
+    } else {
+
+      record.type = req.bosy.type;
+      if (req.body.type === userTypes.USER_TYPE_STANDARD_ADMIN) record.departmentId = req.body.departmentId
+    }
     const user = new User(record)
 
     await user.save();
@@ -72,13 +79,14 @@ router.post("/edit", async (req, res) => {
 
     // check for the valid id
 
-    //check that person is editing it's own information
-    if (req.user._id.toString() !== req.body.id)
-      throw new Error("Invalid request");
 
     const user = await User.findById(req.body.id)
     if (!user)
       throw new Error("Invalid Id");
+      
+    if (req.user.type === userTypes.USER_TYPE_STANDARD_ADMIN && user.departmentId.toString() !== req.user.departmentId.toString())
+      throw new Error("Invalid Id");
+      
 
 
     const record = {
@@ -89,7 +97,10 @@ router.post("/edit", async (req, res) => {
 
     if (req.body.password)
       record.password = await bcrypt.hash(req.body.password, 10);
-    await User.findByIdAndUpdate(req.body.id, record)
+      
+      
+      const updatedUser = await User.findByIdAndUpdate(req.body.id, record)
+    res.status(200).json({ user: updatedUser })
 
   } catch (err) {
     res.status(400).json({ error: err.message })
@@ -223,7 +234,7 @@ router.post("/reset-password", async (req, res) => {
 });
 
 //Delete Users
-router.delete('/delete', async (req, res) => {
+router.post('/delete', async (req, res) => {
   try {
     //  if id is not available
     if (!req.body.id)
@@ -239,6 +250,13 @@ router.delete('/delete', async (req, res) => {
     const user = await User.findById(req.body.id)
     if (!user)
       throw new Error("Invalid Id");
+    
+    if(req.body.id === req.user._id.toString())
+      throw new Error("Invalid Id");
+    
+    if (req.user.type === userTypes.USER_TYPE_STANDARD_ADMIN && user.departmentId.toString() !== req.user.departmentId.toString())
+      throw new Error("Invalid Id");
+      
 
     await User.findByIdAndDelete(req.body.id)
     res.json({ success: true })
@@ -332,8 +350,7 @@ router.get("/all", async (req, res) => {
   try {
 
     const conditions = {}
-    if(req.user.type === userTypes.USER_TYPE_STANDARD_ADMIN)
-    {
+    if (req.user.type === userTypes.USER_TYPE_STANDARD_ADMIN) {
       conditions.departmentId = req.user.departmentId
       conditions.type = userTypes.USER_TYPE_STANDARD_ADMIN
     }
