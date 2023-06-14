@@ -9,6 +9,7 @@ import { hideProgressBar, showProgressBar } from '../../store/actions/progressBa
 import axios from 'axios'
 import { showError, showSuccess } from '../../store/actions/alertActions'
 import DeleteEmployee from './DeleteEmployee';
+import EmployeeQRCode from './EmployeeQRCode';
 
 
 function Employees() {
@@ -108,6 +109,7 @@ function Employees() {
                 <TableCell>
                   <IconButton component={Link} to={`/admin/employees/edit/${employee._id}`}> <EditIcon /> </IconButton>
                   <DeleteEmployee employeeId={employee._id} name={employee.name} deleteEmployee={deleteEmployee} />
+                  <EmployeeQRCode employeeId={employee._id} name={employee.name} />
                 </TableCell>
               </TableRow>
             ))
