@@ -7,7 +7,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import EditIcon from '@mui/icons-material/Edit';
 import { hideProgressBar, showProgressBar } from '../../store/actions/progressBarActions'
 import axios from 'axios'
-import { showError } from '../../store/actions/alertActions'
+import { showError, showSuccess } from '../../store/actions/alertActions'
 import DeleteEmployee from './DeleteEmployee';
 
 
@@ -34,6 +34,20 @@ function Employees() {
   useEffect(() => {
     loadEmployees()
   }, [])
+
+  const deleteEmployee = (id) => {
+    axios.post('api/employees/delete', { id }).then(({ data }) => {
+        if (data.success) {
+          dispatch(hideProgressBar())
+          dispatch(showSuccess('Employee deleted successfully'))
+          setEmployees( employees => employees.filter( item => item._id !== id ))
+        }
+      }).catch(error => {
+        dispatch(hideProgressBar())
+        let message = error && error.response && error.response.data ? error.response.data.error : error.message;
+        dispatch(showError(message))
+      })
+}
 
   if(!department) return null;
 
@@ -86,7 +100,7 @@ function Employees() {
                 </TableCell>
                 <TableCell>
                   <IconButton component={Link} to={`/admin/employees/edit/${employee._id}`}> <EditIcon /> </IconButton>
-                  <DeleteEmployee employeeId={employee._id} name={employee.name} />
+                  <DeleteEmployee employeeId={employee._id} name={employee.name} deleteEmployee={deleteEmployee} />
                 </TableCell>
               </TableRow>
             ))

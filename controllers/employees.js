@@ -87,56 +87,52 @@ router.post("/add", upload.single("profilePicture"), async (req, res) => {
 
 
 //Edit Employee
-router.post("/edit", async (req, res) => {
-
-
+router.post("/edit", upload.single("profilePicture"), async (req, res) => {
     try {
         // if id is not available
         if (!req.body.id)
             throw new Error("Employee Id is invalid")
 
-
-
-        if (req.user.type !== userTypes.USER_TYPE_STANDARD_ADMIN)
-            throw new Error("Invalid Request 1")
-
-
-        // check for the valid id
-
-        const department = await Department.findOne({ userId: req.user._id });
-        if (!department)
-            throw new Error("Department does not exsist")
-
-        if (req.user._id.toString() !== department.userId.toString())
-            throw new Error("Invalid Request 2")
-
         // check for valid object Id using mongoose this will check the id is this id is according to formula of #
         if (!mongoose.isValidObjectId(req.body.id))
             throw new Error("Invalid Id");
-
-        if (req.user._id.toString() !== department.userId.toString())
-            throw new Error("Invalid request 3");
-
+        
         const employee = await Employee.findById(req.body.id)
         if (!employee)
             throw new Error("Invalid Id");
 
+        if (req.user.type !== userTypes.USER_TYPE_SUPER_ADMIN && employee.departmentId.toString() !== req.user.departmentId.toString())
+            throw new Error("Invalid Request")
 
-        //check that Standard admin is updating the data of his own department's employees
+            const {
+                name,
+                email,
+                phone,
+                cnic,
+                designation
+            } = req.body;
+    
+            const record = {
+                name,
+                email,
+                phone,
+                cnic,
+                designation,
+                modifiedOn: new Date()
+            };
+            if(req.file && req.file.filename){
+                record.profilePicture = req.file.filename
+                if(employee.profilePicture && employee.profilePicture !== req.file.filename)
+                    fs.access(`./content/${employee.departmentId}/${employee.profiePicture}`, require('fs').constants.F_OK).then( async () => {
+                        await fs.unlink(`./content/${employee.departmentId}/${employee.profiePicture}`)
+                    }).catch( err => {
+                        console.log(err)
+                    })
+            }
 
-        if (department._id.toString() !== employee.departmentId.toString())
-            throw new Error("Invalid request 4");
 
-
-
-        await Employee.updateOne(
-            { _id: employee._id, departmentId: department._id },
-            { $set: req.body }
-        );
-
-        const updatedEmployee = await Employee.findById(req.body.id);
-        updatedEmployee.save()
-        res.json({ employee: updatedEmployee })
+        await Employee.findByIdAndUpdate(req.body.id, record)
+        res.json({ success: true })
 
     } catch (err) {
         res.status(400).json({ error: err.message })
@@ -151,41 +147,18 @@ router.get("/details/:employeeId", async (req, res) => {
         // if id is not available
         if (!req.params.employeeId)
             throw new Error("Employee Id is invalid")
-
-
-
-        if (req.user.type !== userTypes.USER_TYPE_STANDARD_ADMIN)
-            throw new Error("Invalid Request 1")
-
-
-        // check for the valid id
-
-        const department = await Department.findOne({ userId: req.user._id });
-        if (!department)
-            throw new Error("Department does not exsist")
-
-        if (req.user._id.toString() !== department.userId.toString())
-            throw new Error("Invalid Request 2")
-
-        // check for valid object Id using mongoose this will check the id is this id is according to formula of #
         if (!mongoose.isValidObjectId(req.params.employeeId))
             throw new Error("Invalid Id");
 
-        if (req.user._id.toString() !== department.userId.toString())
-            throw new Error("Invalid request 3");
 
         const employee = await Employee.findById(req.params.employeeId)
         if (!employee)
             throw new Error("Invalid Id");
 
+        if (req.user.type !== userTypes.USER_TYPE_SUPER_ADMIN && employee.departmentId.toString() !== req.user.departmentId.toString())
+            throw new Error("Invalid Request")
 
-        //check that Standard admin is updating the data of his own department's employees
-        if (department._id.toString() !== employee.departmentId.toString())
-            throw new Error("Invalid request 4");
-
-
-
-        res.json(employee)
+        res.json({employee})
 
     } catch (err) {
         res.status(400).json({ error: err.message })
@@ -204,12 +177,12 @@ router.post('/delete', async (req, res) => {
         const employee = await Employee.findById(req.body.id)
         if (!employee)
             throw new Error("Invalid Id");
-        
-        if(req.user.type !== userTypes.USER_TYPE_SUPER_ADMIN && employee.departmentId.toString() !== req.user.departmentId.toString())
+
+        if (req.user.type !== userTypes.USER_TYPE_SUPER_ADMIN && employee.departmentId.toString() !== req.user.departmentId.toString())
             throw new Error("invalid Request")
 
         await Employee.findByIdAndDelete(req.body.id)
-        if(employee.profilePicture) await fs.unlink(`content/${employee.departmentId}/${employee.profilePicture}}`)
+        if (employee.profilePicture) await fs.unlink(`content/${employee.departmentId}/${employee.profilePicture}}`)
         res.json({ success: true })
     } catch (err) {
         res.status(400).json({ error: err.message })
@@ -226,10 +199,10 @@ router.post("/search", async (req, res) => {
         if (!department)
             throw new Error("Department does not exsist")
 
-        const conditions = {departmentId: req.body.deptId};
+        const conditions = { departmentId: req.body.deptId };
 
         let employees = await Employee.find(conditions)
-        res.status(200).json({employees, department});
+        res.status(200).json({ employees, department });
     } catch (err) {
         res.status(400).json({ error: err.message })
     }
