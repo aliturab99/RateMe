@@ -200,6 +200,8 @@ router.post("/search", async (req, res) => {
             throw new Error("Department does not exsist")
 
         const conditions = { departmentId: req.body.deptId };
+        if(req.body.query)
+        conditions['$text'] = { $search: req.body.query}
         const page = req.body.page ? req.body.page : 1;
         const skip = (page - 1) * process.env.RECORDS_PER_PAGE
 

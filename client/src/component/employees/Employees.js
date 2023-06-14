@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, IconButton, Pagination, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
+import { Avatar, Box, Button, IconButton, Pagination, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { connect, useDispatch } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
@@ -19,10 +19,11 @@ function Employees() {
   const [employees, setEmployees] = useState([])
   const [page, SetPage] = useState(1)
   const [numOfPages, setNumOfPages] = useState(1)
+  const [query, setQuery] = useState("")
 
   const loadEmployees = () => {
     dispatch(showProgressBar())
-    axios.post("/api/employees/search", { deptId, page }).then( result => {
+    axios.post("/api/employees/search", { deptId, page, query }).then( result => {
       setDepartment(result.data.department)
       setEmployees(result.data.employees)
       setNumOfPages(result.data.numOfPages)
@@ -64,6 +65,10 @@ function Employees() {
           <Button component={Link} to={`/admin/departments/edit/${deptId}`} variant='outlined' sx={{ mr: 1 }} startIcon={<EditIcon />} > Edit Department</Button>
           <Button component={Link} to={`/admin/employees/add/${deptId}`} variant='outlined' startIcon={<AddIcon />} > Add Employees</Button>
         </Box>
+      </Box>
+      <Box display={'flex'} justifyContent={"space-between"} mt={2}>
+        <TextField sx={{flexGrow:1, mr: 2}} placeholder='Search: Name, Email, Phone, Cnic, or designation...' size='small' onChange={(event) => {setQuery(event.target.value)}} />
+        <Button variant='contained' onClick={loadEmployees}>Search</Button>
       </Box>
       <Table>
         <TableHead>
