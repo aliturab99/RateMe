@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
+import { Avatar, Box, Button, IconButton, Pagination, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { connect, useDispatch } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
@@ -17,13 +17,15 @@ function Employees() {
   const { deptId } = useParams();
   const [department, setDepartment] = useState(null)
   const [employees, setEmployees] = useState([])
+  const [page, SetPage] = useState(1)
+  const [numOfPages, setNumOfPages] = useState(1)
 
   const loadEmployees = () => {
     dispatch(showProgressBar())
-    axios.post("/api/employees/search", { deptId }).then( result => {
-      console.log(result.data)
+    axios.post("/api/employees/search", { deptId, page }).then( result => {
       setDepartment(result.data.department)
       setEmployees(result.data.employees)
+      setNumOfPages(result.data.numOfPages)
       dispatch(hideProgressBar())
     }).catch(error => {
       let message = error && error.response && error.response.data ? error.response.data.error : error.message;
@@ -33,7 +35,7 @@ function Employees() {
   }
   useEffect(() => {
     loadEmployees()
-  }, [])
+  }, [page])
 
   const deleteEmployee = (id) => {
     axios.post('api/employees/delete', { id }).then(({ data }) => {
@@ -107,6 +109,10 @@ function Employees() {
           }
         </TableBody>
       </Table>
+
+      <Box mt={3} display="flex" justifyContent={"center"}>
+        <Pagination count={numOfPages} variant='outlined' color='primary' page={page} onChange={(event, value) => SetPage(value)} />
+      </Box>
       
     </Box>
   )

@@ -200,9 +200,13 @@ router.post("/search", async (req, res) => {
             throw new Error("Department does not exsist")
 
         const conditions = { departmentId: req.body.deptId };
+        const page = req.body.page ? req.body.page : 1;
+        const skip = (page - 1) * process.env.RECORDS_PER_PAGE
 
-        let employees = await Employee.find(conditions)
-        res.status(200).json({ employees, department });
+        let employees = await Employee.find(conditions ,{_id: 1, name: 1, phone: 1, cnic: 1}, {limit : process.env.RECORDS_PER_PAGE, skip})
+        const totalEmployees = await Employee.countDocuments(conditions);
+        const numOfPages = Math.ceil(totalEmployees / process.env.RECORDS_PER_PAGE)
+        res.status(200).json({ employees, department, numOfPages });
     } catch (err) {
         res.status(400).json({ error: err.message })
     }
