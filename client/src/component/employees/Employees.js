@@ -24,7 +24,7 @@ function Employees() {
 
   const loadEmployees = () => {
     dispatch(showProgressBar())
-    axios.post("/api/employees/search", { deptId, page, query }).then( result => {
+    axios.post("/api/employees/search", { deptId, page, query }).then(result => {
       setDepartment(result.data.department)
       setEmployees(result.data.employees)
       setNumOfPages(result.data.numOfPages)
@@ -41,19 +41,19 @@ function Employees() {
 
   const deleteEmployee = (id) => {
     axios.post('api/employees/delete', { id }).then(({ data }) => {
-        if (data.success) {
-          dispatch(hideProgressBar())
-          dispatch(showSuccess('Employee deleted successfully'))
-          setEmployees( employees => employees.filter( item => item._id !== id ))
-        }
-      }).catch(error => {
+      if (data.success) {
         dispatch(hideProgressBar())
-        let message = error && error.response && error.response.data ? error.response.data.error : error.message;
-        dispatch(showError(message))
-      })
-}
+        dispatch(showSuccess('Employee deleted successfully'))
+        setEmployees(employees => employees.filter(item => item._id !== id))
+      }
+    }).catch(error => {
+      dispatch(hideProgressBar())
+      let message = error && error.response && error.response.data ? error.response.data.error : error.message;
+      dispatch(showError(message))
+    })
+  }
 
-  if(!department) return null;
+  if (!department) return null;
 
   return (
     <Box>
@@ -68,7 +68,7 @@ function Employees() {
         </Box>
       </Box>
       <Box display={'flex'} justifyContent={"space-between"} mt={2}>
-        <TextField sx={{flexGrow:1, mr: 2}} placeholder='Search: Name, Email, Phone, Cnic, or designation...' size='small' onChange={(event) => {setQuery(event.target.value)}} />
+        <TextField sx={{ flexGrow: 1, mr: 2 }} placeholder='Search: Name, Email, Phone, Cnic, or designation...' size='small' onChange={(event) => { setQuery(event.target.value) }} />
         <Button variant='contained' onClick={loadEmployees}>Search</Button>
       </Box>
       <Table>
@@ -84,9 +84,9 @@ function Employees() {
 
         <TableBody>
           {
-            employees.length === 0 && 
+            employees.length === 0 &&
             <TableRow>
-              <TableCell colSpan={5} sx={{textAlign:"center"}}>
+              <TableCell colSpan={5} sx={{ textAlign: "center" }}>
                 No employees Found
               </TableCell>
             </TableRow>
@@ -95,10 +95,12 @@ function Employees() {
             employees && employees.map(employee => (
               <TableRow key={employee._id}>
                 <TableCell>
-                  <Avatar src={process.env.REACT_APP_BASE_URL + 'content/' + department._id + "/" + employee.profilePicture} />
+                  <Avatar src={process.env.REACT_APP_BASE_URL + 'content/' + employee.departmentId + '/' + employee.profilePicture} />
                 </TableCell>
                 <TableCell>
-                  {employee.name}
+                  <Link to={`/admin/employees/profile/${employee._id}`}>
+                    {employee.name}
+                  </Link>
                 </TableCell>
                 <TableCell>
                   {employee.phone}
@@ -120,7 +122,7 @@ function Employees() {
       <Box mt={3} display="flex" justifyContent={"center"}>
         <Pagination count={numOfPages} variant='outlined' color='primary' page={page} onChange={(event, value) => SetPage(value)} />
       </Box>
-      
+
     </Box>
   )
 }

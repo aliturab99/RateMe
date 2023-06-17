@@ -15,7 +15,7 @@ const path = require("path")
 const router = express.Router();
 
 
-router.use(["/add", "/edit", "/delete", "/details/:employeeId", "/search"], verifyuser);
+router.use(["/add", "/edit", "/delete", "/details/:employeeId", "/search", "/dashboard"], verifyuser);
 
 const storage = multer.diskStorage({
     destination: async (req, file, cb) => {
@@ -139,7 +139,7 @@ router.post("/edit", upload.single("profilePicture"), async (req, res) => {
     }
 })
 
-//Edit Employee
+//Details Employee
 router.get("/details/:employeeId", async (req, res) => {
 
 
@@ -205,7 +205,7 @@ router.post("/search", async (req, res) => {
         const page = req.body.page ? req.body.page : 1;
         const skip = (page - 1) * process.env.RECORDS_PER_PAGE
 
-        let employees = await Employee.find(conditions ,{_id: 1, name: 1, phone: 1, cnic: 1}, {limit : process.env.RECORDS_PER_PAGE, skip})
+        let employees = await Employee.find(conditions ,{_id: 1, name: 1, phone: 1, cnic: 1, departmentId: 1, profilePicture: 1}, {limit : process.env.RECORDS_PER_PAGE, skip})
         const totalEmployees = await Employee.countDocuments(conditions);
         const numOfPages = Math.ceil(totalEmployees / process.env.RECORDS_PER_PAGE)
         res.status(200).json({ employees, department, numOfPages });
@@ -216,39 +216,133 @@ router.post("/search", async (req, res) => {
 
 router.post("/feedback", async (req, res) => {
 
+    
     try {
-
-
+        if(!req.body.employeeId) throw new Error("Employee Id is required")
+        if(!req.body.rating) throw new Error("Rating is required")
+        if(!req.body.name) throw new Error("Name is required")
+        const employee = await Employee.findById(req.body.employeeId)
+        if (!employee)
+            throw new Error("Invalid Id");
         const {
             name,
-            phoneNumber,
-            feedbackText,
+            phone,
+            message,
             employeeId,
             rating,
         } = req.body;
-
-        const employee = await Employee.findById(employeeId)
-        if (!employee)
-            throw new Error("Invalid Id");
+        
 
         if (rating < 0 || rating > 5)
             throw new Error("Invalid Request")
 
         const ratingData = Rating({
             name,
-            phoneNumber,
-            feedbackText,
+            phone,
+            message,
             departmentId: employee.departmentId,
             employeeId,
             rating,
+            createdOn: new Date()
         })
         await ratingData.save()
-        res.json({ ratingData })
+
+        let result = await Rating.aggregate([
+            {$match: { employeeId: { $eq: new mongoose.Types.ObjectId(employeeId) }}},
+            {$group: { _id: null, avg_value: {$avg: '$rating'}}}
+        ]);
+        if(result && result.length)
+        {
+            await Employee.findByIdAndUpdate( employeeId , {rating: result[0].avg_value.toFixed(1)})
+        }
+        result = await Rating.aggregate([
+            {$match: {departmentId: { $eq: new mongoose.Types.ObjectId(employee.departmentId) }}},
+            {$group: {_id: null, avg_value: {$avg: '$rating'}}}
+        ]);
+        if(result && result.length)
+        {
+            await Department.findByIdAndUpdate( employee.departmentId, {rating: result[0].avg_value.toFixed(1)})
+        }
+
+
+        res.json({ success: true })
 
     } catch (err) {
         res.status(400).json({ error: err.message })
     }
 
+})
+
+//dashboard
+router.get('/dashboard', async (req, res) => {
+    try {
+      const stats = {
+        departments: 0,
+        employees: 0,
+        ratings: 0
+      }
+  
+      if (req.user.type == userTypes.USER_TYPE_SUPER_ADMIN)
+        stats.departments = await Department.estimatedDocumentCount()
+  
+      if (req.user.type == userTypes.USER_TYPE_SUPER_ADMIN) {
+        stats.employees = await Employee.estimatedDocumentCount()
+        stats.ratings = await Rating.estimatedDocumentCount()
+      } else {
+        stats.employees = await Employee.countDocuments({ departmentId: req.user.departmentId })
+        stats.ratings = await Rating.countDocuments({ departmentId: req.user.departmentId })
+      }
+  
+      res.json({ stats })
+    } catch (error) {
+      res.status(400).json({ error: error.message })
+  
+    }
+  })
+  
+//Public Search
+  router.post("/publicSearch", async (req, res) => {
+    try {
+      if (!req.body.departmentId)
+        throw new Error("departmentId is required")
+      if (!req.body.name)
+        throw new Error("name is required")
+  
+      const department = await Department.findById(req.body.departmentId);
+      if (!department) throw new Error("Department does not exists");
+      // $regex stands for regular-expresions and options i stands for case sensitive
+      const filter = { departmentId: req.body.departmentId, name: { $regex: req.body.name, $options: 'i' } }
+  
+      const employees = await Employee.find(filter, { _id: 1, profilePicture: 1, departmentId: 1 , name: 1, phone: 1, cnic: 1 })
+  
+      res.status(200).json({ employees });
+  
+    } catch (error) {
+      res.status(400).json({ error: error.message })
+    }
+  })
+
+//Public Details Employee
+router.get("/publicDetails/:employeeId", async (req, res) => {
+
+
+    try {
+        // if id is not available
+        if (!req.params.employeeId)
+            throw new Error("Employee Id is invalid")
+        if (!mongoose.isValidObjectId(req.params.employeeId))
+            throw new Error("Invalid Id");
+
+
+        const employee = await Employee.findById(req.params.employeeId, {_id: 1, name: 1, departmentId: 1, profilePicture: 1})
+        if (!employee)
+            throw new Error("Invalid Id");
+
+        res.json({employee})
+
+    } catch (err) {
+        res.status(400).json({ error: err.message })
+    }
 })
 
 module.exports = router;

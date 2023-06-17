@@ -7,10 +7,10 @@ const ratingSchema = new mongoose.Schema({
     name: {
         type: String,
     },
-    feedbackText: {
+    message: {
         type: String,
     },
-    phoneNumber: {
+    phone: {
         type: String,
         maxlength: 20,
     },

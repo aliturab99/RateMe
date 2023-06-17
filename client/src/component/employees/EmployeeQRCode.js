@@ -30,7 +30,6 @@ function EmployeeQRCode({employeeId, name}) {
     return (
         <>
             <IconButton onClick={createQRCode}> <QrCode2Icon /> </IconButton>
-
             <Dialog
                 open={open}
                 onClose={handleClose}
