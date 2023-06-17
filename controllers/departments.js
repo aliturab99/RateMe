@@ -41,7 +41,8 @@ const upload = multer({
 
 
 
-router.use(verifyuser);
+router.use(['/add', '/edit', '/delete'], verifyuser);
+
 
 
 router.post("/add", upload.single("logo"), async (req, res) => {
@@ -139,8 +140,8 @@ router.get("/", async (req, res) => {
   try {
 
     //only super admin can see list of departments
-    if (req.user.type !== userTypes.USER_TYPE_SUPER_ADMIN)
-      throw new Error("Invalid Request");
+    // if (req.user.type !== userTypes.USER_TYPE_SUPER_ADMIN)
+    //   throw new Error("Invalid Request");
 
     const departments = await Department.find();
 

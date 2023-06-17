@@ -4,11 +4,11 @@ const moment = require("moment/moment");
 const employeeSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
     },
     email: {
         type: String,
-        required: true
+        required: true,
     },
     phone: {
         type: String,
@@ -16,6 +16,7 @@ const employeeSchema = new mongoose.Schema({
     },
     cnic: {
         type: String,
+
     },
     departmentId: {
         type: mongoose.Schema.Types.ObjectId
@@ -40,6 +41,7 @@ const employeeSchema = new mongoose.Schema({
 
 });
 
+employeeSchema.index({name: "text", cnic: "text", phone: "text", designation: "text", email: "text"})
 
 const Employee = mongoose.model("employees", employeeSchema);
 
