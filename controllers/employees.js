@@ -15,7 +15,7 @@ const path = require("path")
 const router = express.Router();
 
 
-router.use(["/add", "/edit", "/delete", "/details/:employeeId", "/search", "/dashboard"], verifyuser);
+router.use(["/add", "/edit", "/delete", "/details/:employeeId", "/search", "/dashboard", "/rating"], verifyuser);
 
 const storage = multer.diskStorage({
     destination: async (req, file, cb) => {
@@ -27,7 +27,9 @@ const storage = multer.diskStorage({
         }
     },
     filename: (req, file, cb) => {
-        cb(null, file.originalname)
+        const ext = path.extname(file.originalname)
+        const newFileName = Math.random().toString(36).substring(2, 7);
+        cb(null, newFileName + ext)
     }
 })
 
@@ -182,13 +184,28 @@ router.post('/delete', async (req, res) => {
             throw new Error("invalid Request")
 
         await Employee.findByIdAndDelete(req.body.id)
-        if (employee.profilePicture) await fs.unlink(`content/${employee.departmentId}/${employee.profilePicture}}`)
+        if (employee.profilePicture) await fs.unlink(`content/${employee.departmentId}/${employee.profilePicture}`)
+
+        await Rating.deleteMany({employeeId: req.body.id})
+        let result = await Rating.aggregate([
+            {$match: {departmentId: { $eq: employee.departmentId }}},
+            {$group: {_id: null, avg_value: {$avg: '$rating'}}}
+        ]);
+        if(result && result.length)
+        {
+            await Department.findByIdAndUpdate( employee.departmentId, {rating: result[0].avg_value.toFixed(1)})
+        }else{
+            await Department.findByIdAndUpdate( employee.departmentId, {rating: 0})
+        }
+
         res.json({ success: true })
     } catch (err) {
         res.status(400).json({ error: err.message })
     }
 })
 
+
+// Searching Route
 router.post("/search", async (req, res) => {
     try {
 
@@ -213,6 +230,29 @@ router.post("/search", async (req, res) => {
         res.status(400).json({ error: err.message })
     }
 })
+
+
+// Rating For Profile
+router.post("/rating", async (req, res) => {
+    try {
+
+        if (req.user.type !== userTypes.USER_TYPE_SUPER_ADMIN && req.user.departmentId.toString() !== req.body.deptId)
+            throw new Error("Invalid Request 1")
+
+        const conditions = { employeeId: req.body.employeeId };
+        const page = req.body.page ? req.body.page : 1;
+        const skip = (page - 1) * process.env.RECORDS_PER_PAGE
+
+        let ratings = await Rating.find(conditions ,{_id: 1 ,name: 1, phone: 1, message: 1, rating: 1}, {limit : process.env.RECORDS_PER_PAGE, skip})
+        const totalRatings = await Rating.countDocuments(conditions);
+        const numOfPages = Math.ceil(totalRatings / process.env.RECORDS_PER_PAGE)
+        res.status(200).json({ ratings,numOfPages });
+    } catch (err) {
+        res.status(400).json({ error: err.message })
+    }
+})
+
+
 
 router.post("/feedback", async (req, res) => {
 
@@ -256,7 +296,7 @@ router.post("/feedback", async (req, res) => {
             await Employee.findByIdAndUpdate( employeeId , {rating: result[0].avg_value.toFixed(1)})
         }
         result = await Rating.aggregate([
-            {$match: {departmentId: { $eq: new mongoose.Types.ObjectId(employee.departmentId) }}},
+            {$match: {departmentId: { $eq: employee.departmentId }}},
             {$group: {_id: null, avg_value: {$avg: '$rating'}}}
         ]);
         if(result && result.length)

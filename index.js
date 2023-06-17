@@ -10,6 +10,8 @@ const employeeRoutes = require("./controllers/employees");
 const app = express();
 app.use(cors());
 app.use('/content', express.static('content/'))
+app.use( express.static(__dirname + '/client/build'))
+
 app.use(express.json());
 
 app.use ("/api/users", userRoutes);
@@ -23,7 +25,7 @@ mongoose.connect(process.env.MONGODB_CONNECTION_URI).then( () => {
   });
 
 app.all("*", (req, res) => {
-    res.send("Page Not found")
+  res.sendFile(__dirname + '/client/build/index.html')    
 });
 
 app.use( (err, req, res, next ) => {
@@ -35,6 +37,6 @@ app.use( (err, req, res, next ) => {
 })
 
 
-app.listen(5000, () => {
+app.listen( process.env.PORT || 5000, () => {
     console.log(`Listening at 5000`)
 });

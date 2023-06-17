@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 function EmployeeQRCode({employeeId, name}) {
     const [open, setOpen] = useState(false);
-    const url = process.env.REACT_APP_BASE_URL + "employees/feedback/" + employeeId;
+    const url = process.env.REACT_APP_BASE_URL + "employee/feedback/" + employeeId;
     console.log(url)
 
     const handleClickOpen = () => {
