@@ -10,6 +10,7 @@ import SelectInput from '../library/form/SelectInput';
 import ProgressBar from '../library/ProgressBar';
 import { Link } from 'react-router-dom';
 import ScanQRCode from './ScanQRCode';
+import { homeStyle } from './homeStyle';
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -60,7 +61,19 @@ export default function Home() {
   }, [departments])
 
   return (
-    <Box width='100%' minHeight='90%' p={4} alignSelf={"baseline"}>
+    <Box width='100%' minHeight='100%' p={4} alignSelf={"baseline"}>
+      <Box textAlign={"center"} mb={2}>
+        <Typography my={2} variant='h5' fontWeight={700} letterSpacing={5}>
+          Rate-Me
+        </Typography>
+        <Box>
+          <Link to={"/"} style={homeStyle.linkStyle}>Home</Link>
+          <Link to={"/admin/signin/"} style={homeStyle.linkStyle}>Sign In</Link>
+          <Link to={"/"} style={homeStyle.linkStyle}>Top Departments</Link>
+          <Link to={"/"} style={homeStyle.linkStyle}>Top Employees</Link>
+        </Box>
+      </Box>
+      <Box>
       <Form
         onSubmit={searchEmploys}
         validate={validate}
@@ -115,7 +128,7 @@ export default function Home() {
                     </Typography>
                   </Box>
                 }
+      </Box>
     </Box>
   )
-
 };

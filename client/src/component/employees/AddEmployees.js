@@ -78,8 +78,7 @@ function AddEmployees() {
                             sx={{ marginTop: '20px' }}
                             variant="outlined"
                             type="submit"
-                            disabled={invalid || submitting}
-                        >Add Department</Button>
+                            disabled={invalid || submitting}>Add Employee</Button>
                     </form>
                 )}
             />

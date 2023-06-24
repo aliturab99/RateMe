@@ -44,12 +44,11 @@ router.post("/add", async (req, res) => {
       password: await bcrypt.hash(req.body.password, 10),
       createdOn: new Date()
     }
-
-    if (req.user.type === userTypes.USER_TYPE_STANDARD_ADMIN) {
+    console.log(req.user)
+    if (req.user.type === userTypes.USER_TYPE_SUPER_ADMIN) {
       record.departmentId = req.user.departmentId;
       record.type = userTypes.USER_TYPE_STANDARD_ADMIN
     } else {
-
       record.type = req.bosy.type;
       if (req.body.type === userTypes.USER_TYPE_STANDARD_ADMIN) record.departmentId = req.body.departmentId
     }

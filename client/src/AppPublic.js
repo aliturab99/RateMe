@@ -16,9 +16,6 @@ function AppPublic() {
         <Route path="/" Component={Home} />
         <Route path="/employee/feedback/:employeeId" Component={Feedback} />
 
-
-
-
         <Route path="/admin/signin" Component={SignIn} />
         <Route path="/admin/forgot-password" Component={ForgotPassword} />
         <Route path="/admin/reset-password/:resetCode" Component={ResetPassword} />

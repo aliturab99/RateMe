@@ -61,10 +61,8 @@ function App({ user, isAuthLoaded, loadAuth, userType }) {
       <Container sx={{ mt: 10, position: "relative", backgroundColor: '#fff', p: 3, minWidth: '350px', borderRadius: "5px", boxShadow: "0 0 17px 5px #dbdada" }} maxWidth="lg">
         <BlockInterface />
         <Routes>
-
           <Route path="/admin/account-settings" Component={AccountSettings} />
           <Route path="/admin/dashboard" Component={Dashboard} />
-
           {/* Departments routes */}
           {
             userType === userTypes.USER_TYPE_SUPER &&
@@ -73,32 +71,24 @@ function App({ user, isAuthLoaded, loadAuth, userType }) {
               <Route path="/admin/departments/add" Component={AddDepartment} />
             </>
           }
-
           <Route path="/admin/departments/edit/:deptId" Component={EditDepartment} />
-
-
           {/* Users routes */}
           <Route path="/admin/users" Component={Users} />
           <Route path="/admin/users/add" Component={AddUser} />
           <Route path="/admin/users/edit/:userId" Component={EditUser} />
-
           {/* employees routes */}
           <Route path="/admin/employees/:deptId" Component={Employees} />
           <Route path="/admin/employees/add/:deptId" Component={AddEmployees} />
           <Route path="/admin/employees/edit/:employeeId" Component={EditEmployee} />
           <Route path="/admin/employees/profile/:employeeId" Component={EmployeeProfile} />
-
-
           {/* 404 */}
           <Route path="*" Component={NotFound404} />
-
         </Routes>
       </Container>
 
     </div>
   );
 }
-
 const mapStateToProps = (state) => {
   return (
     {
@@ -108,5 +98,4 @@ const mapStateToProps = (state) => {
     }
   )
 }
-
 export default connect(mapStateToProps, { loadAuth, signOut })(App);

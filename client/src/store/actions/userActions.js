@@ -37,7 +37,7 @@ export const deleteUser = (id) => {
       if (data.success) {
         dispatch({ type: userActions.REMOVE_USER, id })
         dispatch(hideProgressBar())
-        dispatch(showSuccess('Department deleted successfully'))
+        dispatch(showSuccess('User deleted successfully'))
       }
     }).catch(error => {
       dispatch(hideProgressBar())

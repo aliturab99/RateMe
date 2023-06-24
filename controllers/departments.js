@@ -43,7 +43,7 @@ const upload = multer({
 
 
 
-router.use(['/add', '/edit', '/delete'], verifyuser);
+router.use(['/add', '/edit', '/delete', "/details/:deptId"], verifyuser);
 
 
 
@@ -156,10 +156,10 @@ router.get("/", async (req, res) => {
 
 router.get("/details/:deptId", async (req, res) => {
   try {
-    console.log(req.params.deptId)
     if(!req.params.deptId)
       throw new Error("Department Id is required")
 
+      console.log(req.user)
     if(req.user.type !== userTypes.USER_TYPE_SUPER_ADMIN && req.user.departmentId.toString() !== req.params.deptId)
       throw new Error("Invalid request")
     

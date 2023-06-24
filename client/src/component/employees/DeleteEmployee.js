@@ -8,7 +8,7 @@ import { showError, showSuccess } from '../../store/actions/alertActions';
 import axios from 'axios';
 
 
-function DeleteEmployee({  employeeId, name,deleteEmployee  }) {
+function DeleteEmployee({  employeeId, name, deleteEmployee  }) {
     const dispatch = useDispatch()
 
     const [anchorEl, setAnchorEl] = useState(null);
